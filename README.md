@@ -198,7 +198,7 @@ The model is trained on the **Indian Air Quality Dataset** containing:
 
 ---
 
-## 🙏 Acknowledgements
+##  Acknowledgements
 
 - Dataset sourced from Indian government air quality monitoring stations
 - UI inspired by Apple's design language
@@ -206,6 +206,3 @@ The model is trained on the **Indian Air Quality Dataset** containing:
 
 ---
 
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/Gagan021">Gagan</a>
-</p>
