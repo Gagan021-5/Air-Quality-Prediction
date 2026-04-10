@@ -215,7 +215,7 @@ function NumberField({ label, icon: Icon, name, value, onChange, min, max, place
 
 /* ─── Main App ─── */
 function App() {
-  const [metadata, setMetadata] = useState({ states: [], cities: [] });
+  const [metadata, setMetadata] = useState({ states: [], cities: [], cities_by_state: {} });
   const [metadataLoading, setMetadataLoading] = useState(true);
   const [formData, setFormData] = useState({
     state: "",
@@ -245,8 +245,19 @@ function App() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // When state changes, reset the city so stale city isn't carried over
+    if (name === "state") {
+      setFormData((prev) => ({ ...prev, state: value, city: "" }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
+
+  // Only show cities that belong to the currently selected state
+  const filteredCities =
+    formData.state && metadata.cities_by_state[formData.state]
+      ? metadata.cities_by_state[formData.state]
+      : [];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -516,8 +527,8 @@ function App() {
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    placeholder="Select a city"
-                    options={metadata.cities}
+                    placeholder={formData.state ? "Select a city" : "Select a state first"}
+                    options={filteredCities}
                   />
                   <SelectField
                     label="Pollutant"

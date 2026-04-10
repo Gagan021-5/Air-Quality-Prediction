@@ -38,7 +38,14 @@ def hello():
 def metadata():
     states = sorted(df["state"].dropna().unique().tolist())
     cities = sorted(df["city"].dropna().unique().tolist())
-    return jsonify({"states": states, "cities": cities})
+    # Build a state -> [cities] mapping for filtered dropdowns
+    cities_by_state = (
+        df.dropna(subset=["state", "city"])
+        .groupby("state")["city"]
+        .apply(lambda x: sorted(x.unique().tolist()))
+        .to_dict()
+    )
+    return jsonify({"states": states, "cities": cities, "cities_by_state": cities_by_state})
 
 
 @app.route("/predict", methods=["POST"])
