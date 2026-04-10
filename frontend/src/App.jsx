@@ -232,7 +232,8 @@ function App() {
     const fetchMetadata = async () => {
       try {
         const response = await axios.get("https://predback.onrender.com/metadata");
-        setMetadata(response.data);
+        // Merge with safe default so cities_by_state is always an object
+        setMetadata({ cities_by_state: {}, ...response.data });
       } catch (err) {
         setError("Failed to load location data. Please refresh the page.");
         console.error("Metadata Error:", err);
@@ -253,10 +254,22 @@ function App() {
     }
   };
 
+  // Build cities_by_state on the client if the backend didn't return it yet
+  // (handles the case before the backend is redeployed)
+  const citiesByState = Object.keys(metadata.cities_by_state).length > 0
+    ? metadata.cities_by_state
+    : metadata.city_state_pairs
+      ? metadata.city_state_pairs.reduce((acc, { state, city }) => {
+          if (!acc[state]) acc[state] = [];
+          acc[state].push(city);
+          return acc;
+        }, {})
+      : null;
+
   // Only show cities that belong to the currently selected state
   const filteredCities =
-    formData.state && metadata.cities_by_state[formData.state]
-      ? metadata.cities_by_state[formData.state]
+    formData.state && citiesByState?.[formData.state]
+      ? citiesByState[formData.state]
       : [];
 
   const handleSubmit = async (e) => {
