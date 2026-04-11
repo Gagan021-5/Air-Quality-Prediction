@@ -201,7 +201,6 @@ The model is trained on the **Indian Air Quality Dataset** containing:
 ##  Acknowledgements
 
 - Dataset sourced from Indian government air quality monitoring stations
-- UI inspired by Apple's design language
 - Built with open-source tools and libraries
 
 ---
